@@ -14,14 +14,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.switchmaterial.MaterialSwitch
+import com.google.android.material.switchmaterial.MaterialSwitch // <-- PERBAIKAN 1: Menambahkan import
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,44 +41,35 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Inisialisasi SharedPreferences untuk menyimpan tema
         sharedPreferences = getSharedPreferences("fonetikku_prefs", MODE_PRIVATE)
-
-        // Terapkan tema SEBELUM UI dibuat
         applyTheme()
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        // Hubungkan variabel dengan elemen UI di layout
         initializeViews()
-        // Atur semua listener untuk tombol dan switch
         setupListeners()
     }
 
     private fun applyTheme() {
         val isDarkMode = sharedPreferences.getBoolean("dark_mode", false)
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkMode) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
     }
 
     private fun initializeViews() {
-        inputField = findViewById(R.id.inputField)
-        processBtn = findViewById(R.id.processBtn)
-        resetBtn = findViewById(R.id.resetBtn)
-        copyBtn = findViewById(R.id.copyBtn)
-        modeRadioGroup = findViewById(R.id.modeRadioGroup)
-        progressBar = findViewById(R.id.progressBar)
-        indicatorText = findViewById(R.id.indicatorText)
-        resultArea = findViewById(R.id.resultArea)
-        themeSwitch = findViewById(R.id.themeSwitch)
+        // PERBAIKAN 2: Menambahkan tipe eksplisit <...> untuk semua findViewById
+        inputField = findViewById<EditText>(R.id.inputField)
+        processBtn = findViewById<Button>(R.id.processBtn)
+        resetBtn = findViewById<Button>(R.id.resetBtn)
+        copyBtn = findViewById<Button>(R.id.copyBtn)
+        modeRadioGroup = findViewById<RadioGroup>(R.id.modeRadioGroup)
+        progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        indicatorText = findViewById<TextView>(R.id.indicatorText)
+        resultArea = findViewById<TextView>(R.id.resultArea)
+        themeSwitch = findViewById<MaterialSwitch>(R.id.themeSwitch)
     }
 
     private fun setupListeners() {
-        // Listener untuk tombol Proses/Jeda
         processBtn.setOnClickListener {
             if (isProcessing) {
                 pauseProcessing()
@@ -87,14 +77,8 @@ class MainActivity : AppCompatActivity() {
                 startProcessing()
             }
         }
-
-        // Listener untuk tombol Reset
         resetBtn.setOnClickListener { resetAll() }
-
-        // Listener untuk tombol Salin
         copyBtn.setOnClickListener { copyResults() }
-
-        // Listener untuk toggle tema
         themeSwitch.isChecked = sharedPreferences.getBoolean("dark_mode", false)
         themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
@@ -109,11 +93,12 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val linesToProcess = inputText.split('\n').filter { it.isNotBlank() }
+        // PERBAIKAN 3: Menggunakan Regex untuk memisahkan baris baru, lebih andal
+        val linesToProcess = inputText.split(Regex("\\R")).filter { it.isNotBlank() }
         if (linesToProcess.isEmpty()) return
 
         isProcessing = true
-        resetBtn.isEnabled = false // Nonaktifkan reset selama proses
+        resetBtn.isEnabled = false
         processBtn.text = "Jeda"
         resultArea.text = ""
         progressBar.visibility = View.VISIBLE
@@ -121,11 +106,10 @@ class MainActivity : AppCompatActivity() {
         progressBar.progress = 0
         indicatorText.text = "0/${linesToProcess.size}"
 
-        // Mulai proses di latar belakang menggunakan Coroutines
         currentJob = CoroutineScope(Dispatchers.Main).launch {
             val resultsBuilder = StringBuilder()
             linesToProcess.forEachIndexed { index, line ->
-                if (!isActive) return@forEachIndexed // Berhenti jika job dibatalkan
+                if (!isActive) return@forEachIndexed
 
                 val resultLine = processSingleLine(line)
                 resultsBuilder.append(resultLine).append("\n")
@@ -134,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 progressBar.progress = index + 1
                 indicatorText.text = "${index + 1}/${linesToProcess.size}"
                 
-                delay(50) // Jeda kecil agar UI tidak macet
+                delay(50)
             }
             finishProcessing()
         }
@@ -146,10 +130,12 @@ class MainActivity : AppCompatActivity() {
         } else { // Smart Mode
             val parts = line.split(";", 3)
             if (parts.size == 3) {
-                val pattern = Pattern.compile("^(.*?)\\(EN Asli\\)$")
-                val matcher = pattern.matcher(parts[2].trim())
-                if (matcher.find()) {
-                    val ipa = matcher.group(1)?.trim() ?: ""
+                // PERBAIKAN 4: Menggunakan Regex Kotlin yang lebih modern dan aman
+                val regex = Regex("^(.*?)\\(EN Asli\\)$")
+                val matchResult = regex.find(parts[2].trim())
+                
+                if (matchResult != null) {
+                    val ipa = matchResult.groupValues[1].trim()
                     val fonetikku = Fonetikku.konversi(ipa)
                     "${parts[0]};${parts[1]};$fonetikku(EN Asli)"
                 } else {
@@ -165,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         processBtn.text = "Proses"
         isProcessing = false
         resetBtn.isEnabled = true
-        currentJob?.cancel() // Batalkan job yang sedang berjalan
+        currentJob?.cancel()
         indicatorText.text = "Dijeda"
     }
     
