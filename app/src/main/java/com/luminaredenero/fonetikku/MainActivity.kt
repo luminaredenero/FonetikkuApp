@@ -54,15 +54,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        inputField = findViewById<EditText>(R.id.inputField)
-        processBtn = findViewById<Button>(R.id.processBtn)
-        resetBtn = findViewById<Button>(R.id.resetBtn)
-        copyBtn = findViewById<Button>(R.id.copyBtn)
-        modeRadioGroup = findViewById<RadioGroup>(R.id.modeRadioGroup)
-        progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        indicatorText = findViewById<TextView>(R.id.indicatorText)
-        resultArea = findViewById<TextView>(R.id.resultArea)
-        themeSwitch = findViewById<MaterialSwitch>(R.id.themeSwitch)
+        inputField = findViewById(R.id.inputField)
+        processBtn = findViewById(R.id.processBtn)
+        resetBtn = findViewById(R.id.resetBtn)
+        copyBtn = findViewById(R.id.copyBtn)
+        modeRadioGroup = findViewById(R.id.modeRadioGroup)
+        progressBar = findViewById(R.id.progressBar)
+        indicatorText = findViewById(R.id.indicatorText)
+        resultArea = findViewById(R.id.resultArea)
+        themeSwitch = findViewById(R.id.themeSwitch)
     }
 
     private fun setupListeners() {
@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Input tidak boleh kosong", Toast.LENGTH_SHORT).show()
             return
         }
-        val linesToProcess = inputText.split(Regex("\\R")).filter { it.isNotBlank() }
+        val linesToProcess = inputText.split("\n").filter { it.isNotBlank() }
         if (linesToProcess.isEmpty()) return
 
         isProcessing = true
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity() {
         return if (modeRadioGroup.checkedRadioButtonId == R.id.directModeRadio) {
             Fonetikku.konversi(line.trim())
         } else { // Smart Mode
-            val parts = line.split(";", 3)
+            val parts = line.split(";", limit = 3)
             if (parts.size == 3) {
                 val regex = Regex("^(.*?)\\(EN Asli\\)$")
                 val matchResult = regex.find(parts[2].trim())
