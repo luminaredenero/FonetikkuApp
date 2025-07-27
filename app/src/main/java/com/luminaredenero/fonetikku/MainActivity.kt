@@ -14,7 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.switchmaterial.MaterialSwitch // <-- PERBAIKAN 1: Menambahkan import
+import com.google.android.material.switchmaterial.MaterialSwitch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    // Deklarasi elemen UI
     private lateinit var inputField: EditText
     private lateinit var processBtn: Button
     private lateinit var resetBtn: Button
@@ -34,8 +33,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var indicatorText: TextView
     private lateinit var resultArea: TextView
     private lateinit var themeSwitch: MaterialSwitch
-
-    // Variabel untuk menyimpan state
     private var isProcessing = false
     private var currentJob: Job? = null
     private lateinit var sharedPreferences: SharedPreferences
@@ -57,7 +54,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        // PERBAIKAN 2: Menambahkan tipe eksplisit <...> untuk semua findViewById
         inputField = findViewById<EditText>(R.id.inputField)
         processBtn = findViewById<Button>(R.id.processBtn)
         resetBtn = findViewById<Button>(R.id.resetBtn)
@@ -92,8 +88,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Input tidak boleh kosong", Toast.LENGTH_SHORT).show()
             return
         }
-
-        // PERBAIKAN 3: Menggunakan Regex untuk memisahkan baris baru, lebih andal
         val linesToProcess = inputText.split(Regex("\\R")).filter { it.isNotBlank() }
         if (linesToProcess.isEmpty()) return
 
@@ -110,39 +104,34 @@ class MainActivity : AppCompatActivity() {
             val resultsBuilder = StringBuilder()
             linesToProcess.forEachIndexed { index, line ->
                 if (!isActive) return@forEachIndexed
-
                 val resultLine = processSingleLine(line)
                 resultsBuilder.append(resultLine).append("\n")
                 resultArea.text = resultsBuilder.toString()
-                
                 progressBar.progress = index + 1
                 indicatorText.text = "${index + 1}/${linesToProcess.size}"
-                
                 delay(50)
             }
             finishProcessing()
         }
     }
-    
+
     private fun processSingleLine(line: String): String {
         return if (modeRadioGroup.checkedRadioButtonId == R.id.directModeRadio) {
             Fonetikku.konversi(line.trim())
         } else { // Smart Mode
             val parts = line.split(";", 3)
             if (parts.size == 3) {
-                // PERBAIKAN 4: Menggunakan Regex Kotlin yang lebih modern dan aman
                 val regex = Regex("^(.*?)\\(EN Asli\\)$")
                 val matchResult = regex.find(parts[2].trim())
-                
                 if (matchResult != null) {
                     val ipa = matchResult.groupValues[1].trim()
                     val fonetikku = Fonetikku.konversi(ipa)
                     "${parts[0]};${parts[1]};$fonetikku(EN Asli)"
                 } else {
-                    line // Format tidak cocok, kembalikan baris asli
+                    line
                 }
             } else {
-                line // Format tidak cocok, kembalikan baris asli
+                line
             }
         }
     }
@@ -154,7 +143,7 @@ class MainActivity : AppCompatActivity() {
         currentJob?.cancel()
         indicatorText.text = "Dijeda"
     }
-    
+
     private fun finishProcessing() {
         isProcessing = false
         resetBtn.isEnabled = true
