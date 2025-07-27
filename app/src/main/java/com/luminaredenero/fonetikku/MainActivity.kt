@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.RadioGroup
@@ -54,15 +55,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        inputField = findViewById(R.id.inputField)
-        processBtn = findViewById(R.id.processBtn)
-        resetBtn = findViewById(R.id.resetBtn)
-        copyBtn = findViewById(R.id.copyBtn)
-        modeRadioGroup = findViewById(R.id.modeRadioGroup)
-        progressBar = findViewById(R.id.progressBar)
-        indicatorText = findViewById(R.id.indicatorText)
-        resultArea = findViewById(R.id.resultArea)
-        themeSwitch = findViewById(R.id.themeSwitch)
+        inputField = findViewById<EditText>(R.id.inputField)
+        processBtn = findViewById<Button>(R.id.processBtn)
+        resetBtn = findViewById<Button>(R.id.resetBtn)
+        copyBtn = findViewById<Button>(R.id.copyBtn)
+        modeRadioGroup = findViewById<RadioGroup>(R.id.modeRadioGroup)
+        progressBar = findViewById<ProgressBar>(R.id.progressBar)
+        indicatorText = findViewById<TextView>(R.id.indicatorText)
+        resultArea = findViewById<TextView>(R.id.resultArea)
+        themeSwitch = findViewById<MaterialSwitch>(R.id.themeSwitch)
     }
 
     private fun setupListeners() {
@@ -75,8 +76,9 @@ class MainActivity : AppCompatActivity() {
         }
         resetBtn.setOnClickListener { resetAll() }
         copyBtn.setOnClickListener { copyResults() }
+        
         themeSwitch.isChecked = sharedPreferences.getBoolean("dark_mode", false)
-        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+        themeSwitch.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
             sharedPreferences.edit().putBoolean("dark_mode", isChecked).apply()
             applyTheme()
         }
@@ -117,8 +119,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun processSingleLine(line: String): String {
         return if (modeRadioGroup.checkedRadioButtonId == R.id.directModeRadio) {
+            // Mode 1: Direct IPA to Fonetikku conversion
             Fonetikku.konversi(line.trim())
-        } else { // Smart Mode
+        } else { // Mode 2: Smart Mode
             val parts = line.split(";", limit = 3)
             if (parts.size == 3) {
                 val regex = Regex("^(.*?)\\(EN Asli\\)$")

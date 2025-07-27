@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#F0F2F5"
+    android:background="?attr/colorSurface"
     tools:context=".MainActivity">
 
-        <TextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Aplikasi Fonetikku"
@@ -24,15 +24,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Mode Gelap"
+        android:textColor="?attr/colorOnSurface"
         android:layout_marginBottom="16dp"/>
-
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mode Proses:"
         android:textSize="14sp"
-        android:textColor="@color/black"/>
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginBottom="8dp"/>
 
     <RadioGroup
         android:id="@+id/modeRadioGroup"
@@ -45,50 +46,59 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mode 1: Langsung IPA ke Fonetikku"
+            android:textColor="?attr/colorOnSurface"
             android:checked="true"/>
         <RadioButton
             android:id="@+id/smartModeRadio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mode 2: Deteksi Cerdas"/>
+            android:text="Mode 2: Deteksi Cerdas"
+            android:textColor="?attr/colorOnSurface"/>
     </RadioGroup>
 
-    <EditText
-        android:id="@+id/inputField"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:hint="Masukkan teks di sini..."
-        android:gravity="top"
-        android:background="@android:drawable/editbox_background"
-        android:padding="8dp"
-        android:inputType="textMultiLine"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:hint="Masukkan teks di sini...">
+        
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputField"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="8dp">
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/processBtn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Proses"/>
-        <Button
+            android:text="Proses"
+            style="@style/Widget.Material3.Button"/>
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/resetBtn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Reset"/>
+            android:text="Reset"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleHorizontal"
@@ -102,40 +112,48 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:textColor="?attr/colorOnSurface"
             tools:text="0/0"/>
     </LinearLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:layout_marginBottom="8dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hasil:"
             android:textStyle="bold"
             android:layout_centerVertical="true"
-            android:textColor="@color/black"/>
-        <Button
+            android:textColor="?attr/colorOnSurface"/>
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/copyBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:text="Salin Semua"/>
+            android:text="Salin Semua"
+            style="@style/Widget.Material3.Button.TextButton"/>
     </RelativeLayout>
 
-    <ScrollView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginTop="8dp"
-        android:background="@android:drawable/editbox_background_normal">
-        <TextView
-            android:id="@+id/resultArea"
+        android:layout_marginTop="8dp">
+        
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:textIsSelectable="true"/>
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:padding="8dp">
+            <TextView
+                android:id="@+id/resultArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true"
+                android:textColor="?attr/colorOnSurface"
+                android:fontFamily="monospace"/>
+        </ScrollView>
+    </com.google.android.material.card.MaterialCardView>
+    
 </LinearLayout>
