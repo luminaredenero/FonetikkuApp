@@ -11,11 +11,11 @@ import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.RadioGroup
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.switchmaterial.MaterialSwitch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var indicatorText: TextView
     private lateinit var resultArea: TextView
-    private lateinit var themeSwitch: MaterialSwitch
+    private lateinit var themeSwitch: Switch
     private var isProcessing = false
     private var currentJob: Job? = null
     private lateinit var sharedPreferences: SharedPreferences
@@ -55,15 +55,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initializeViews() {
-        inputField = findViewById<EditText>(R.id.inputField)
-        processBtn = findViewById<Button>(R.id.processBtn)
-        resetBtn = findViewById<Button>(R.id.resetBtn)
-        copyBtn = findViewById<Button>(R.id.copyBtn)
-        modeRadioGroup = findViewById<RadioGroup>(R.id.modeRadioGroup)
-        progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        indicatorText = findViewById<TextView>(R.id.indicatorText)
-        resultArea = findViewById<TextView>(R.id.resultArea)
-        themeSwitch = findViewById<MaterialSwitch>(R.id.themeSwitch)
+        inputField = findViewById(R.id.inputField)
+        processBtn = findViewById(R.id.processBtn)
+        resetBtn = findViewById(R.id.resetBtn)
+        copyBtn = findViewById(R.id.copyBtn)
+        modeRadioGroup = findViewById(R.id.modeRadioGroup)
+        progressBar = findViewById(R.id.progressBar)
+        indicatorText = findViewById(R.id.indicatorText)
+        resultArea = findViewById(R.id.resultArea)
+        themeSwitch = findViewById(R.id.themeSwitch)
     }
 
     private fun setupListeners() {
