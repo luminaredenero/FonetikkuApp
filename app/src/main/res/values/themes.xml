@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.Fonetikku" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:textColor">@color/textPrimary</item>
+    </style>
+
+    <style name="Theme.Fonetikku" parent="Base.Theme.Fonetikku" />
+</resources>
